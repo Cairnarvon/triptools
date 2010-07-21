@@ -4,12 +4,20 @@
 
 #ifndef SECURE_TRIP
 
+#ifdef SJIS_CONVERT
+#include <iconv.h>
+#endif
+
 #include <openssl/des.h>
 
 const char *salt = "................................"
                    ".............../0123456789ABCDEF"
                    "GABCDEFGHIJKLMNOPQRSTUVWXYZabcde"
-                   "fabcdefghijklmnopqrstuvwxyz.....";
+                   "fabcdefghijklmnopqrstuvwxyz....."
+                   "................................"
+                   "................................"
+                   "................................"
+                   "................................";
 
 #else
 
@@ -26,13 +34,14 @@ const char *b64 = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdef"
 int main(int argc, char **argv)
 {
 #ifndef SECURE_TRIP
-    char s[3], c_ret[14], *trip = c_ret + 3, cap[9];
+    char s[3], c_ret[14], *trip = c_ret + 3, *sjis, cap[9];
     int k;
 #else
     char trip[16];
     unsigned char *cap, *sectrip_bin;
 #endif
-    int i, j, l;
+    int i, j;
+    unsigned l;
 
     if (argc < 2) {
         fprintf(stderr, "Usage: %s capcode\n", argv[0]);
@@ -41,14 +50,38 @@ int main(int argc, char **argv)
 
 
     for (i = 1; i < argc; ++i) {
-        l = strlen(argv[i]);
 
 #ifndef SECURE_TRIP
 
-        for (j = k = 0; j < l && k < 8; ++j, ++k) {
-            switch (argv[i][j]) {
+#ifdef SJIS_CONVERT
+
+        unsigned int outleft = 20;
+
+        sjis = malloc(20);
+        memset(sjis, 0, 20);
+
+        l = strlen(argv[i]);
+
+        iconv(iconv_open("SJIS//IGNORE", "UTF-8"),
+              &argv[i], &l, &sjis, &outleft);
+
+        outleft = 20 - outleft;
+        sjis[outleft] = 0;
+        sjis -= outleft;
+
+#else
+
+        l = strlen(argv[i]);
+        sjis = argv[i];
+
+#endif
+
+        memset(cap, 0, 9);
+
+        for (j = k = 0; j < 8 && k < 8; ++j, ++k) {
+            switch (sjis[j]) {
             case '&':
-                if (argv[i][j + 1] != '#') {
+                if (sjis[j + 1] != '#') {
                     cap[k] = '&';
                     if (++k < 8) cap[k] = 'a';
                     if (++k < 8) cap[k] = 'm';
@@ -85,21 +118,28 @@ int main(int argc, char **argv)
                 if (++k < 8) cap[k] = ';';
                 break;
             default:
-                cap[k] = argv[i][j];
+                cap[k] = sjis[j];
             }
         }
 
         cap[k > 8 ? 8 : k] = 0;
         l = strlen(cap);
 
-        s[0] = l > 1 ? salt[(int) cap[1]] : l > 0 ? 'H' : '.';
-        s[1] = l > 2 ? salt[(int) cap[2]] : l > 1 ? 'H' : '.';
+        s[0] = l > 1 ? salt[(unsigned char) cap[1]] : l > 0 ? 'H' : '.';
+        s[1] = l > 2 ? salt[(unsigned char) cap[2]] : l > 1 ? 'H' : '.';
 
         DES_fcrypt(cap, s, c_ret);
         trip[10] = 0;
 
+#ifdef SJIS_CONVERT
+
+        free(sjis);
+
+#endif
+
 #else
 
+        l = strlen(argv[i]);
         cap = malloc((l + sizeof(salt)) * sizeof(unsigned char));
 
         memcpy(cap, argv[i], l);

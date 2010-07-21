@@ -6,7 +6,7 @@ CFLAGS = $(WARNS) $(LIBS) -O3
 all: tripcode sectrip tripfind secfind tripfind-regex secfind-regex
 
 tripcode: tripcode.c
-	$(CC) -o $@ $(CFLAGS) tripcode.c
+	$(CC) -o $@ $(CFLAGS) -DSJIS_CONVERT tripcode.c
 
 sectrip: tripcode.c salt.h
 	$(CC) -o $@ $(CFLAGS) -DSECURE_TRIP tripcode.c

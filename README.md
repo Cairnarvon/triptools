@@ -5,7 +5,9 @@ This is a collection of [tripcode](http://en.wikipedia.org/wiki/Tripcode)-relate
 
 ## `tripcode`
 
-The first tool is `tripcode`, which just applies the tripcode algorithm to its arguments. It does Shiichan-style character escaping, which may or may not be what you want. Its behaviour for non-ASCII input is undefined, as indeed the tripcode algorithm itself is.
+The first tool is `tripcode`, which just applies the tripcode algorithm to its arguments. It does Shiichan-style character escaping, which may or may not be what you want.
+
+By default, input is converted to SJIS, and it is assumed to be in UTF-8 before conversion. If you don't want it to be converted, compile it without defining SJIS_CONVERT. If your character encoding isn't UTF-8, you will have to edit `tripcode.c`.
 
 ### Usage example
 

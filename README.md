@@ -7,7 +7,7 @@ This is a collection of [tripcode](http://en.wikipedia.org/wiki/Tripcode)-relate
 
 The first tool is `tripcode`, which just applies the tripcode algorithm to its arguments. It does Shiichan-style character escaping, which may or may not be what you want.
 
-By default, input is converted to SJIS, and it is assumed to be in UTF-8 before conversion. If you don't want it to be converted, define the `NO_SJIS` environment variable before running `build.sh` or `make`
+By default, input is converted to SJIS, and it is assumed to be in UTF-8 before conversion. If you don't want it to be converted, define the `NO_SJIS` environment variable before running `build.sh` or `make`.
 
 >    $ NO_SJIS=1 ./build.sh
 
@@ -58,4 +58,4 @@ These are equivalent to `tripfind` and `secfind`, except that instead of a simpl
 
 This isn't actually one of the tools, but just a helper script that will invoke `make` to build the utilities, and will also test the output of `tripcode` and `sectrip` to ensure that it's consistent with known tripcodes.
 
-If you don't want to build all four tools at once, you can also build them individually using `make tripcode`, `make tripfind`, &c.
+If you don't want to build all six tools at once, you can also build them individually using `make tripcode`, `make tripfind`, &c.

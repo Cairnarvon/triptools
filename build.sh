@@ -62,5 +62,27 @@ make secfind
 echo -en "\033[0m"
 
 if [ ! -f secfind ]; then
-    echo -e "\033[1;31mERROR\033[0m Couldn't build regular tripcode tool!"
+    echo -e "\033[1;31mERROR\033[0m Couldn't build secure tripfinder!"
+fi
+
+
+# Regular tripfinder with regex (tripfind-regex)
+
+echo -en "\033[2m"
+make tripfind-regex
+echo -en "\033[0m"
+
+if [ ! -f tripfind-regex ]; then 
+    echo -e "\033[1;31mERROR\033[0m Couldn't build regular regex tripfinder!"
+fi
+
+
+# Secure tripfinder (secfind)
+
+echo -en "\033[2m"
+make secfind-regex
+echo -en "\033[0m"
+
+if [ ! -f secfind-regex ]; then
+    echo -e "\033[1;31mERROR\033[0m Couldn't build secure regex tripfinder!"
 fi

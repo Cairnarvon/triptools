@@ -7,6 +7,12 @@
 #include <sys/time.h>
 #include <time.h>
 
+#ifdef USE_REGEX
+
+#include <regex.h>
+
+#endif
+
 #ifndef SECURE_TRIP
 
 #include <openssl/des.h>
@@ -66,6 +72,10 @@ int main(int argc, char **argv)
         i;
     char *c[8];
 
+#ifdef USE_REGEX
+    regex_t preg;
+#endif
+
 
     if (argc < 2) usage(argv[0]);
 
@@ -83,6 +93,8 @@ int main(int argc, char **argv)
         }
     }
 
+#ifndef USE_REGEX
+
     /* Validate target */
     if (!validate_target(target)) {
             fprintf(stderr,
@@ -95,6 +107,15 @@ int main(int argc, char **argv)
                     target);
             return 2;
     }
+
+#else
+
+    if (regcomp(&preg, target, REG_EXTENDED | REG_NOSUB) != 0) {
+        fprintf(stderr, "Malformed regular expression.\n");
+        return 2;
+    }
+
+#endif
 
 
     /* Associate signal handler. */
@@ -194,7 +215,11 @@ int main(int argc, char **argv)
 
 #endif
 
+#ifndef USE_REGEX
         if (strstr(trip, target) != NULL) {
+#else
+        if (regexec(&preg, trip, 0, NULL, 0) == 0) {
+#endif
             char capcode[9];
 
             strncpy(capcode, (char*) cap, 8);

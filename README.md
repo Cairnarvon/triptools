@@ -43,6 +43,11 @@ These are the equivalents of `tripcode` and `tripfind` for Shiichan's secure tri
 **Caveat:** these depend on a secret salt, which, inconveniently, isn't known for world4ch. These tools currently use an old salt that was compromised and replaced. Less than useful, sorry.
 
 
+## `tripfind-regex` and `secfind-regex`
+
+These are equivalent to `tripfind` and `secfind`, except that instead of a simple string, they take a POSIX extended regular expression for a target. This makes them slightly slower.
+
+
 ## `build.sh`
 
 This isn't actually one of the tools, but just a helper script that will invoke `make` to build the utilities, and will also test the output of `tripcode` and `sectrip` to ensure that it's consistent with known tripcodes.

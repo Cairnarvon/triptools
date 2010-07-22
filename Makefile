@@ -1,7 +1,7 @@
 CC = gcc
 LIBS = -lssl
 WARNS = -Wall -Wextra -pedantic -Werror -Wno-unused-parameter
-CFLAGS = $(WARNS) $(LIBS) -O3
+CFLAGS := $(WARNS) $(LIBS) -O3 $(CFLAGS)
 TARGS = tripcode sectrip tripfind secfind tripfind-regex secfind-regex
 
 ifdef NO_SJIS

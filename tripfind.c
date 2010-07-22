@@ -73,20 +73,45 @@ int main(int argc, char **argv)
     char *c[8];
 
 #ifdef USE_REGEX
+
     regex_t preg;
+    int cflags = REG_EXTENDED | REG_NOSUB;
+
+#else
+
+    char *(*matcher)(const char*, const char*) = &strstr;
+
 #endif
 
 
     if (argc < 2) usage(argv[0]);
 
     /* Parse options */
-    while ((opt = getopt(argc, argv, "rp:h")) != -1) {
+    while ((opt = getopt(argc, argv, "rp:ih")) != -1) {
         switch (opt) {
         case 'r':
             do_random = 1;
             break;
         case 'p':
             procs = atoi(optarg);
+            break;
+        case 'i':
+
+#ifndef USE_REGEX
+
+#ifdef _GNU_SOURCE
+            matcher = &strcasestr;
+#else
+            fprintf(stderr, "\033[1;31mOops!\033[0m Case insensitive matching "
+                            "not supported!\nTo enable it, recompile with "
+                            "\033[1m-D_GNU_SOURCE\033[0m (if you're using "
+                            "glibc).\n");
+#endif
+
+#else
+            cflags |= REG_ICASE;
+#endif
+
             break;
         default:
             usage(argv[0]);
@@ -110,7 +135,7 @@ int main(int argc, char **argv)
 
 #else
 
-    if (regcomp(&preg, target, REG_EXTENDED | REG_NOSUB) != 0) {
+    if (regcomp(&preg, target, cflags) != 0) {
         fprintf(stderr, "Malformed regular expression.\n");
         return 2;
     }
@@ -216,7 +241,7 @@ int main(int argc, char **argv)
 #endif
 
 #ifndef USE_REGEX
-        if (strstr(trip, target) != NULL) {
+        if (matcher(trip, target) != NULL) {
 #else
         if (regexec(&preg, trip, 0, NULL, 0) == 0) {
 #endif
@@ -244,9 +269,11 @@ void usage(char *execname)
             "\t%s [ \033[4mOPTIONS\033[0m... ] \033[4mTARGET\033[0m\n\n"
             "\033[1mOPTIONS\033[0m\n\n"
             "\t\033[1m-r\033[0m\n"
-            "\t\tBegin search at random position. (default: no)\n\n"
+            "\t\tBegin search at random position.\n\n"
             "\t\033[1m-p\033[0m \033[4mPROCS\033[0m\n"
             "\t\tNumber of processes to use. (default: 1)\n\n"
+            "\t\033[1m-i\033[0m\n"
+            "\t\tIgnore case when matching.\n\n"
             "\t\033[1m-h\033[0m\n"
             "\t\tDisplay this message and exit.\n\n",
             execname);

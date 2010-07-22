@@ -34,7 +34,8 @@ const char *b64 = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdef"
 
 #endif
 
-unsigned int p_id = 0, checked = 0;
+unsigned int p_id = 0;
+unsigned long checked = 0;
 struct timeval t_begin;
 
 
@@ -326,7 +327,7 @@ void done(int _)
     }
 
     fprintf(stderr,
-            "[%d] %d tripcodes examined in %d.%03d seconds (%d per second).\n",
-            p_id, checked, sec, usec / 1000, checked / sec);
+            "[%d] %ld tripcodes examined in %d.%03d seconds (%d per second).\n",
+            p_id, checked, sec, usec / 1000, (int) checked / sec);
     exit(0);
 }

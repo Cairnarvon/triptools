@@ -299,7 +299,7 @@ void done(int _)
     }
 
     fprintf(stderr,
-            "[%d] %d tripcodes examined in %d.%d seconds (%d per second).\n",
+            "[%d] %d tripcodes examined in %d.%03d seconds (%d per second).\n",
             p_id, checked, sec, usec / 1000, checked / sec);
     exit(0);
 }

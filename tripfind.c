@@ -48,7 +48,6 @@ int main(int argc, char **argv)
 {
     char *set = "!$%'()*+,-./0123456789:;=?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\"
                 "]^_`abcdefghijklmnopqrstuvwxyz{|}~",
-          opt,
          *target = argv[argc - 1];
 
 #ifndef SECURE_TRIP
@@ -70,6 +69,7 @@ int main(int argc, char **argv)
         procs = 1,
         do_random = 0,
         srt, stp,               /* beginning and end of search processes */
+        opt,
         i;
     char *c[8];
 

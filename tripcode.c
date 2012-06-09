@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stddef.h>
 
 #ifndef SECURE_TRIP
 
@@ -41,7 +42,7 @@ int main(int argc, char **argv)
     unsigned char *cap, *sectrip_bin;
 #endif
     int i, j;
-    unsigned l;
+    size_t l;
 
     if (argc < 2) {
         fprintf(stderr, "Usage: %s capcode\n", argv[0]);
@@ -55,7 +56,7 @@ int main(int argc, char **argv)
 
 #ifdef SJIS_CONVERT
 
-        unsigned int outleft = 20;
+        size_t outleft = 20;
 
         sjis = malloc(20);
         memset(sjis, 0, 20);

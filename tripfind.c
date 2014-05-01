@@ -124,11 +124,11 @@ int main(int argc, char **argv)
     /* Validate target */
     if (!validate_target(target)) {
             fprintf(stderr,
-                    "Invalid target \033[1m%s\033[0m: too long or not in"
+                    "Invalid target \033[1m%s\033[0m: too long or not in "
 #ifndef SECURE_TRIP
-                    "[A-Za-z./].\n",
+                    "[A-Za-z0-9./].\n",
 #else
-                    "[A-Za-z+/].\n",
+                    "[A-Za-z0-9+/].\n",
 #endif
                     target);
             return 2;
@@ -297,6 +297,7 @@ int validate_target(char *target)
     for (i = 0; i < l; ++i) {
         if ((target[i] < 'A' || target[i] > 'Z') &&
             (target[i] < 'a' || target[i] > 'z') &&
+            (target[i] < '0' || target[i] > '9') &&
 #ifndef SECURE_TRIP
             target[i] != '.' &&
 #else
